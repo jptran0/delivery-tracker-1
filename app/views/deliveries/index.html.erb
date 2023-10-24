@@ -1,0 +1,105 @@
+<div>
+  <div>
+    <h1>
+      Delivery Tracker
+    </h1>
+
+    <p>
+      Know if something gets lost in the mail.
+    </p>
+  </div>
+</div>
+
+<hr>
+
+<div>
+  <div>
+    <h2>
+      Expecting a package?
+    </h2>
+
+    <form action="/insert_delivery" method="post">
+      <div>
+        <label for="description">
+          Description
+        </label>
+
+        <input type="text" id="description" name="description">
+      </div>
+
+      <div>
+        <label for="supposed_to_arrive_on">
+          Supposed to arrive on
+        </label>
+        <input type="date" id="supposed_to_arrive_on" name="supposed_to_arrive_on">
+      </div>
+      
+      <div>
+        <label for="details">
+          Details
+        </label>
+
+        <textarea name="details" id="details" rows="3"></textarea>
+      </div>
+
+      <button>
+        Log delivery
+      </button>
+    </form>
+  </div>
+</div>
+
+<hr>
+<div class="waiting_on">
+  <h2>Waiting on</h2>
+  <ul>
+    <% @waiting.each do |package| %>
+      <li>
+        <div>
+          <%= package.description %>
+        </div>
+        
+        <div>
+          <% if Date.today - package.supposed_to_arrive_on >= 3  %>
+            <span class="late">Supposed to arrive on <%= package.supposed_to_arrive_on %></span>
+          <% else %>
+            Supposed to arrive on <%= package.supposed_to_arrive_on %>
+          <% end %>
+        </div>
+
+        <div>
+          <%= package.details %>
+        </div>
+
+        <div>
+          <form action="/modify_delivery/<%= package.id %>" method="post">
+            <button>Mark as received</button>
+          </form>
+        </div>
+        <br>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<hr>
+
+<div class="received">
+  <h2>Received</h2>
+
+  <ul>
+  <% @received.each do |package| %>
+    <li>
+      <div>
+        <%= package.description %>
+      </div>
+
+      <div>
+        <small>
+          Updated <%= time_ago_in_words(package.updated_at) %> ago <a href="/delete_delivery/<%= package.id %>">Delete</a>
+        </small>
+      </div>
+    </li>
+  <% end %>
+  </ul>
+</div>
